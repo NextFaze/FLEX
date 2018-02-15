@@ -34,8 +34,13 @@
 {
     self = [self initWithNibName:nil bundle:nil];
     if (self) {
-        self.originalText = text;
-        NSString *htmlString = [NSString stringWithFormat:@"<head><meta name='viewport' content='initial-scale=1.0'></head><body><pre>%@</pre></body>", [FLEXUtility stringByEscapingHTMLEntitiesInString:text]];
+        NSData *data = [text dataUsingEncoding:NSUTF8StringEncoding];
+        if ([FLEXUtility isValidJSONData:data]) {
+            self.originalText = [FLEXUtility prettyJSONStringFromData:data];
+        } else {
+            self.originalText = text;
+        }
+        NSString *htmlString = [NSString stringWithFormat:@"<head><meta name='viewport' content='initial-scale=1.0'></head><body><pre>%@</pre></body>", [FLEXUtility stringByEscapingHTMLEntitiesInString:self.originalText]];
         [self.webView loadHTMLString:htmlString baseURL:nil];
     }
     return self;
