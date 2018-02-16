@@ -196,6 +196,17 @@ static const CGFloat kColumnMargin = 1;
     [self.leftTableView reloadData];
 }
 
+- (NSString *)stringForCellData:(id)cellData
+{
+    if ([cellData isKindOfClass:[NSData class]]) {
+        NSDictionary *dict = [NSKeyedUnarchiver unarchiveObjectWithData:(NSData *)cellData];
+        if (dict != nil) {
+            return [NSString stringWithFormat:@"%@",dict];
+        }
+    }
+    return [NSString stringWithFormat:@"%@",cellData];
+}
+
 - (UITableViewCell *)tableView:(UITableView *)tableView
          cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -216,7 +227,7 @@ static const CGFloat kColumnMargin = 1;
             UILabel *label  = cell.labels[i];
             label.textColor = [UIColor blackColor];
             
-            NSString *content = [NSString stringWithFormat:@"%@",self.rowData[i]];
+            NSString *content = [self stringForCellData:self.rowData[i]];
             if ([content isEqualToString:@"<null>"]) {
                 label.textColor = [UIColor lightGrayColor];
                 content = @"NULL";
